@@ -1,0 +1,11 @@
+{
+    "name": "com.bovinelabs.rendering",
+    "description": "Custom version of the Unity RenderMeshSystem (V1) to add support for replacement materials and material property blocks (based off work by julian-moschuering)",
+    "version": "0.1.0",
+    "unity": "2018.3",
+    "displayName": "BovineLabs.Rendering",
+    "dependencies": {
+        "com.unity.entities": "0.0.12-preview.24",
+		"com.unity.rendering.hybrid": "0.0.1-preview.4"
+    }
+}
