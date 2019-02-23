@@ -803,14 +803,24 @@ namespace BovineLabs.Systems.Rendering
 
             EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-            var query = new EntityArchetypeQuery
+            /*var query = new EntityArchetypeQuery
             {
                 Any = Array.Empty<ComponentType>(),
                 None = new ComponentType[] { typeof(VisibleLocalToWorld) },
                 All = new ComponentType[] { typeof(RenderMesh), typeof(LocalToWorld) }
-            };
+            };*/
             var entityType = this.GetArchetypeChunkEntityType();
-            var chunks = this.EntityManager.CreateArchetypeChunkArray(query, Allocator.TempJob);
+            
+            // TODO
+            var group = this.GetComponentGroup(new EntityArchetypeQuery
+            {
+                Any = Array.Empty<ComponentType>(),
+                None = new ComponentType[] { typeof(VisibleLocalToWorld) },
+                All = new ComponentType[] { typeof(RenderMesh), typeof(LocalToWorld) }
+            });
+            
+            //var chunks = this.EntityManager.CreateArchetypeChunkArray(query, Allocator.TempJob);
+            var chunks = group.CreateArchetypeChunkArray(Allocator.TempJob);
             for (int i = 0; i < chunks.Length; i++)
             {
                 var chunk = chunks[i];
