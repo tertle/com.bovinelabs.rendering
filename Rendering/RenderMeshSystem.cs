@@ -55,6 +55,7 @@ namespace BovineLabs.Systems.Rendering
 
         ComponentGroup m_FrozenChunksQuery;
         ComponentGroup m_DynamicChunksQuery;
+        ComponentGroup m_MissingVisibleLocalToWorldQuery;
 
         static unsafe void CopyTo(NativeSlice<VisibleLocalToWorld> transforms, int count, Matrix4x4[] outMatrices, int offset)
         {
@@ -87,11 +88,11 @@ namespace BovineLabs.Systems.Rendering
                 All = new ComponentType[] { typeof(LocalToWorld), typeof(RenderMesh), typeof(VisibleLocalToWorld) },
             });
 
-            this.GetComponentGroup(new EntityArchetypeQuery
+            m_MissingVisibleLocalToWorldQuery = GetComponentGroup(new EntityArchetypeQuery
             {
                 Any = Array.Empty<ComponentType>(),
                 None = new ComponentType[] { typeof(VisibleLocalToWorld) },
-                All = new ComponentType[] { typeof(RenderMesh), typeof(LocalToWorld) },
+                All = new ComponentType[] { typeof(RenderMesh), typeof(LocalToWorld) }
             });
 
             this.m_Planes = new NativeArray<float4>(6, Allocator.Persistent);
@@ -803,24 +804,10 @@ namespace BovineLabs.Systems.Rendering
 
             EntityCommandBuffer entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-            /*var query = new EntityArchetypeQuery
-            {
-                Any = Array.Empty<ComponentType>(),
-                None = new ComponentType[] { typeof(VisibleLocalToWorld) },
-                All = new ComponentType[] { typeof(RenderMesh), typeof(LocalToWorld) }
-            };*/
             var entityType = this.GetArchetypeChunkEntityType();
+
+            var chunks = m_MissingVisibleLocalToWorldQuery.CreateArchetypeChunkArray(Allocator.TempJob);
             
-            // TODO
-            var group = this.GetComponentGroup(new EntityArchetypeQuery
-            {
-                Any = Array.Empty<ComponentType>(),
-                None = new ComponentType[] { typeof(VisibleLocalToWorld) },
-                All = new ComponentType[] { typeof(RenderMesh), typeof(LocalToWorld) }
-            });
-            
-            //var chunks = this.EntityManager.CreateArchetypeChunkArray(query, Allocator.TempJob);
-            var chunks = group.CreateArchetypeChunkArray(Allocator.TempJob);
             for (int i = 0; i < chunks.Length; i++)
             {
                 var chunk = chunks[i];
