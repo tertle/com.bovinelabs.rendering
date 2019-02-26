@@ -19,7 +19,7 @@ namespace BovineLabs.Systems.Rendering
     /// Float instanced render property.
     /// </summary>
     /// <typeparam name="T">The unmanaged type.</typeparam>
-    public unsafe class FloatInstancedRenderProperty<T> : InstancedRenderProperty<T, float>
+    public abstract unsafe class FloatInstancedRenderProperty<T> : InstancedRenderProperty<T, float>
         where T : struct, IInstancedRenderProperty<float>
     {
         private GCHandle handle;
@@ -30,7 +30,7 @@ namespace BovineLabs.Systems.Rendering
         /// <summary>
         /// Initializes a new instance of the <see cref="FloatInstancedRenderProperty{T}"/> class.
         /// </summary>
-        public FloatInstancedRenderProperty()
+        protected FloatInstancedRenderProperty()
         {
             this.managedData = new float[1023];
             this.handle = GCHandle.Alloc(this.managedData, GCHandleType.Pinned);

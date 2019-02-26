@@ -15,7 +15,7 @@ namespace BovineLabs.Systems.Rendering
     using UnityEngine;
     using UnityEngine.Assertions;
 
-    public unsafe class Float4x4InstancedRenderProperty<T> : InstancedRenderProperty<T, float4x4>
+    public abstract unsafe class Float4x4InstancedRenderProperty<T> : InstancedRenderProperty<T, float4x4>
         where T : struct, IInstancedRenderProperty<float4x4>
     {
         private GCHandle handle;
@@ -90,7 +90,7 @@ namespace BovineLabs.Systems.Rendering
                 header->length = originalLength;
             }
         }
-        
+
         public override void ApplyPerInstance(MaterialPropertyBlock block, int index)
         {
             if (this.lastWrite < index)

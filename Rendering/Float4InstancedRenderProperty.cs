@@ -15,7 +15,7 @@ namespace BovineLabs.Systems.Rendering
     using UnityEngine;
     using UnityEngine.Assertions;
 
-    public unsafe class Float4InstancedRenderProperty<T> : InstancedRenderProperty<T, float4>
+    public abstract unsafe class Float4InstancedRenderProperty<T> : InstancedRenderProperty<T, float4>
         where T : struct, IInstancedRenderProperty<float4>
     {
         private GCHandle handle;
@@ -23,7 +23,7 @@ namespace BovineLabs.Systems.Rendering
 
         private int lastWrite;
 
-        public Float4InstancedRenderProperty()
+        protected Float4InstancedRenderProperty()
         {
             this.managedData = new Vector4[1023];
             this.handle = GCHandle.Alloc(this.managedData, GCHandleType.Pinned);

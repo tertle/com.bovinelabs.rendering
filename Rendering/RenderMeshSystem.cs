@@ -353,7 +353,7 @@ namespace BovineLabs.Systems.Rendering
                 }
             }
         }
-        
+
         [BurstCompile]
         struct MapChunkRenderers : IJobParallelFor
         {
@@ -588,6 +588,40 @@ namespace BovineLabs.Systems.Rendering
 
         private void FetchProperties()
         {
+            var instancedPropertyTypes = new List<Type>();
+            foreach (var ass in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                IEnumerable<Type> allTypes;
+                try
+                {
+                    allTypes = ass.GetTypes();
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    allTypes = e.Types.Where(t => t != null);
+                }
+
+                instancedPropertyTypes.AddRange(allTypes.Where(t =>
+                    !t.IsAbstract && !t.ContainsGenericParameters &&
+                    typeof(InstancedRenderPropertyBase).IsAssignableFrom(t)));
+            }
+
+            this.CreateInstancedPropertyWrappers(instancedPropertyTypes);
+        }
+
+        private void CreateInstancedPropertyWrappers(IReadOnlyList<Type> propertyTypes)
+        {
+            this.instancedProperties = new InstancedRenderPropertyBase[propertyTypes.Count];
+            for (var i = 0; i < propertyTypes.Count; i++)
+            {
+                var type = propertyTypes[i];
+
+                this.instancedProperties[i] = (InstancedRenderPropertyBase)Activator.CreateInstance(type);
+            }
+        }
+
+        /*private void FetchProperties()
+        {
             // find property types
             var instancedPropertyTypes = new List<Type>();
             foreach (var ass in AppDomain.CurrentDomain.GetAssemblies())
@@ -613,6 +647,8 @@ namespace BovineLabs.Systems.Rendering
             this.instancedProperties = new InstancedRenderPropertyBase[propertyTypes.Count];
             for (var i = 0; i < propertyTypes.Count; i++)
             {
+                Debug.Log(propertyTypes[i]);
+
                 var propertyInterface = propertyTypes[i].GetInterfaces().First(
                     t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IInstancedRenderProperty<>));
                 var cargoType = propertyInterface.GenericTypeArguments[0];
@@ -623,7 +659,7 @@ namespace BovineLabs.Systems.Rendering
                 var wrap = constructor.Invoke(Array.Empty<object>()) as InstancedRenderPropertyBase;
                 this.instancedProperties[i] = wrap;
             }
-        }
+        }*/
 
         private static Type GetInstancedWrapType(Type cargoType)
         {
@@ -807,7 +843,7 @@ namespace BovineLabs.Systems.Rendering
             var entityType = this.GetArchetypeChunkEntityType();
 
             var chunks = m_MissingVisibleLocalToWorldQuery.CreateArchetypeChunkArray(Allocator.TempJob);
-            
+
             for (int i = 0; i < chunks.Length; i++)
             {
                 var chunk = chunks[i];
