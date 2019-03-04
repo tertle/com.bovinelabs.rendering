@@ -23,7 +23,7 @@ namespace BovineLabs.Systems.Rendering
 
         private int lastWrite;
 
-        public Float4x4InstancedRenderProperty()
+        protected Float4x4InstancedRenderProperty()
         {
             this.managedData = new Matrix4x4[1023];
             this.handle = GCHandle.Alloc(this.managedData, GCHandleType.Pinned);

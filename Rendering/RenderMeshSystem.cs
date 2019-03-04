@@ -620,70 +620,7 @@ namespace BovineLabs.Systems.Rendering
             }
         }
 
-        /*private void FetchProperties()
-        {
-            // find property types
-            var instancedPropertyTypes = new List<Type>();
-            foreach (var ass in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                IEnumerable<Type> allTypes;
-                try
-                {
-                    allTypes = ass.GetTypes();
-                }
-                catch (ReflectionTypeLoadException e)
-                {
-                    allTypes = e.Types.Where(t => t != null);
-                }
-
-                instancedPropertyTypes.AddRange(allTypes.Where(t => t.IsValueType && t.ImplementsInterface(typeof(IInstancedRenderProperty<>))));
-            }
-
-            this.CreateInstancedPropertyWrappers(instancedPropertyTypes);
-        }
-
-        private void CreateInstancedPropertyWrappers(IReadOnlyList<Type> propertyTypes)
-        {
-            this.instancedProperties = new InstancedRenderPropertyBase[propertyTypes.Count];
-            for (var i = 0; i < propertyTypes.Count; i++)
-            {
-                Debug.Log(propertyTypes[i]);
-
-                var propertyInterface = propertyTypes[i].GetInterfaces().First(
-                    t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IInstancedRenderProperty<>));
-                var cargoType = propertyInterface.GenericTypeArguments[0];
-
-                var wrapType = GetInstancedWrapType(cargoType);
-                var constructor = wrapType.MakeGenericType(propertyTypes[i]).GetConstructor(Array.Empty<Type>());
-                Debug.Assert(constructor != null, nameof(constructor) + " != null");
-                var wrap = constructor.Invoke(Array.Empty<object>()) as InstancedRenderPropertyBase;
-                this.instancedProperties[i] = wrap;
-            }
-        }*/
-
-        private static Type GetInstancedWrapType(Type cargoType)
-        {
-            // todo: fetch using reflection? InstancedRenderProperty<,> with second parameter == cargoType
-            //       Should nearly never change thought...
-            if (cargoType == typeof(float))
-            {
-                return typeof(FloatInstancedRenderProperty<>);
-            }
-
-            if (cargoType == typeof(float4))
-            {
-                return typeof(Float4InstancedRenderProperty<>);
-            }
-
-            if (cargoType == typeof(float4x4))
-            {
-                return typeof(Float4x4InstancedRenderProperty<>);
-            }
-
-            throw new ArgumentException($"Invalid cargo for render property {cargoType.Name}");
-        }
-
-        void RenderBatch(int lastRendererIndex, int batchCount)
+        private void RenderBatch(int lastRendererIndex, int batchCount)
         {
             var renderer = this.renderMeshes[this.globalToLocalScd[lastRendererIndex]];
 
