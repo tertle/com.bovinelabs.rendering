@@ -1,4 +1,4 @@
-﻿// <copyright file="WorldInitialization.cs" company="BovineLabs">
+﻿/*// <copyright file="WorldInitialization.cs" company="BovineLabs">
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 // <summary>
@@ -29,7 +29,7 @@ namespace Unity.Rendering
 #pragma warning disable 649
         ComponentDataFromEntity<ActiveLODGroupMask> m_ActiveLODGroupMask;
 #pragma warning restore 649
-        
+
         [BurstCompile]
         struct LODGroupJob : IJobProcessComponentData<MeshLODGroupComponent, LocalToWorld, ActiveLODGroupMask>
         {
@@ -37,7 +37,7 @@ namespace Unity.Rendering
             [ReadOnly]
             [NativeDisableContainerSafetyRestriction]
             public ComponentDataFromEntity<ActiveLODGroupMask> HLODActiveMask;
-            
+
             unsafe public void Execute([ReadOnly]ref MeshLODGroupComponent lodGroup, [ReadOnly]ref LocalToWorld localToWorld, ref ActiveLODGroupMask activeMask)
             {
                 if (lodGroup.ParentGroup != Entity.Null)
@@ -59,8 +59,8 @@ namespace Unity.Rendering
         [BurstCompile]
         struct HLODGroupJob : IJobProcessComponentData<MeshLODGroupComponent, LocalToWorld, ActiveLODGroupMask>
         {
-            public LODGroupExtensions.LODParams LODParams;  
-            
+            public LODGroupExtensions.LODParams LODParams;
+
             unsafe public void Execute([ReadOnly]ref MeshLODGroupComponent lodGroup, [ReadOnly]ref LocalToWorld localToWorld, ref ActiveLODGroupMask activeMask)
             {
                 activeMask.LODMask = LODGroupExtensions.CalculateCurrentLODMask(lodGroup.LODDistances0, math.transform(localToWorld.Value, lodGroup.LocalReferencePoint), ref this.LODParams);
@@ -73,7 +73,7 @@ namespace Unity.Rendering
             {
                 var hlodJob = new HLODGroupJob { LODParams = LODGroupExtensions.CalculateLODParams(this.ActiveCamera)};
                 dependency = hlodJob.Schedule(this, dependency);
-                
+
                 var lodJob = new LODGroupJob { LODParams = LODGroupExtensions.CalculateLODParams(this.ActiveCamera), HLODActiveMask = this.m_ActiveLODGroupMask };
                 dependency = lodJob.Schedule(this, dependency);
             }
@@ -82,4 +82,4 @@ namespace Unity.Rendering
         }
     }
 }
-#endif
+#endif*/
